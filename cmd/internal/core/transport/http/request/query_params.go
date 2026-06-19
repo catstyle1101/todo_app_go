@@ -1,4 +1,4 @@
-package core_http_utils
+package core_http_request
 
 import (
 	"fmt"
@@ -6,6 +6,11 @@ import (
 	"strconv"
 
 	core_errors "github.com/catstyle1101/todo_app_go/cmd/internal/core/errors"
+)
+
+var (
+	LimitQueryParamKey  = "limit"
+	OffsetQueryParamKey = "offset"
 )
 
 func GetIntQueryParam(r *http.Request, key string) (*int, error) {
@@ -31,12 +36,12 @@ func GetIntQueryParam(r *http.Request, key string) (*int, error) {
 }
 
 func GetLimitOffsetQueryParams(r *http.Request) (*int, *int, error) {
-	limit, err := GetIntQueryParam(r, "limit")
+	limit, err := GetIntQueryParam(r, LimitQueryParamKey)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get 'limit' query param: %w", err)
 	}
 
-	offset, err := GetIntQueryParam(r, "offset")
+	offset, err := GetIntQueryParam(r, OffsetQueryParamKey)
 	if err != nil {
 		return nil, nil, fmt.Errorf("get 'offset' query param: %w", err)
 	}

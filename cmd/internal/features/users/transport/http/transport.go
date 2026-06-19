@@ -38,7 +38,6 @@ type UsersService interface {
 		ctx context.Context,
 		id int,
 		patch domain.UserPatch,
-
 	) (domain.User, error)
 }
 
@@ -59,6 +58,13 @@ func (h *UsersHTTPHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodGet,
 			Path:    "/users",
 			Handler: h.GetUsers,
+			/*
+				Example of usage middleware on separate Route
+
+				Middleware: []core_http_middleware.MiddleWare{
+				core_http_middleware.Dummy("test"),
+				},
+			*/
 		},
 		{
 			Method:  http.MethodGet,
