@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	core_config "github.com/catstyle1101/todo_app_go/cmd/internal/core/config"
 	core_logger "github.com/catstyle1101/todo_app_go/cmd/internal/core/logger"
 	core_pgx_pool "github.com/catstyle1101/todo_app_go/cmd/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/catstyle1101/todo_app_go/cmd/internal/core/transport/http/middleware"
@@ -21,12 +22,9 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	timeZone = time.UTC
-)
-
 func main() {
-	time.Local = timeZone
+	cfg := core_config.NewConfigMust()
+	time.Local = cfg.TimeZone
 
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
@@ -42,7 +40,7 @@ func main() {
 	}
 	defer logger.Close()
 
-	logger.Debug("Application timezone", zap.Any("zone", timeZone))
+	logger.Debug("Application timezone", zap.Any("zone", time.Local))
 
 	logger.Info("🚀 Starting ToDo application!")
 
