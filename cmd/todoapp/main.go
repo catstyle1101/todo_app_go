@@ -6,18 +6,28 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	core_logger "github.com/catstyle1101/todo_app_go/cmd/internal/core/logger"
 	core_pgx_pool "github.com/catstyle1101/todo_app_go/cmd/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/catstyle1101/todo_app_go/cmd/internal/core/transport/http/middleware"
 	core_http_server "github.com/catstyle1101/todo_app_go/cmd/internal/core/transport/http/server"
+	tasks_postgres_repository "github.com/catstyle1101/todo_app_go/cmd/internal/features/tasks/repository/postgres"
+	tasks_service "github.com/catstyle1101/todo_app_go/cmd/internal/features/tasks/service"
+	tasks_transport_http "github.com/catstyle1101/todo_app_go/cmd/internal/features/tasks/transport/http"
 	users_postgres_repository "github.com/catstyle1101/todo_app_go/cmd/internal/features/users/repository/postgres"
 	users_service "github.com/catstyle1101/todo_app_go/cmd/internal/features/users/service"
 	users_transport_http "github.com/catstyle1101/todo_app_go/cmd/internal/features/users/transport/http"
 	"go.uber.org/zap"
 )
 
+var (
+	timeZone = time.UTC
+)
+
 func main() {
+	time.Local = timeZone
+
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
 		syscall.SIGINT,
@@ -31,6 +41,8 @@ func main() {
 		os.Exit(1)
 	}
 	defer logger.Close()
+
+	logger.Debug("Application timezone", zap.Any("zone", timeZone))
 
 	logger.Info("🚀 Starting ToDo application!")
 
@@ -48,6 +60,11 @@ func main() {
 	userService := users_service.NewUsersService(usersRepository)
 	usersTransportHTTP := users_transport_http.NewUsersHttpHandler(userService)
 
+	logger.Debug("Initializing feature", zap.String("feature", "tasks"))
+	tasksRepository := tasks_postgres_repository.NewTasksRepository(pool)
+	tasksService := tasks_service.NewTasksService(tasksRepository)
+	tasksTransportHTTP := tasks_transport_http.NewTaskHTTPHandler(tasksService)
+
 	logger.Debug("initializing HTTP server")
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
@@ -59,6 +76,7 @@ func main() {
 	)
 	apiVersionRouterV1 := core_http_server.NewApiVersionRouter(core_http_server.ApiVersion1)
 	apiVersionRouterV1.RegisterRoutes(usersTransportHTTP.Routes()...)
+	apiVersionRouterV1.RegisterRoutes(tasksTransportHTTP.Routes()...)
 	/*
 		Example of usage middleware on separate api version router
 
