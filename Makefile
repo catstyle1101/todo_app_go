@@ -23,7 +23,7 @@ env-port-forward:
 	@docker compose up -d port-forwarder
 
 env-port-close:
-	@docker compose down -d port-forwarder
+	@docker compose down port-forwarder
 
 #создание миграций
 # https://hub.docker.com/r/migrate/migrate
@@ -69,3 +69,11 @@ logs-cleanup:
 	else \
 		echo "Очистка логов отменена"; \
 	fi
+
+todoapp-deploy:
+	@docker compose up -d --build todoapp
+
+todoapp-undeploy:
+	@docker compose down todoapp
+ps:
+	@docker compose ps
