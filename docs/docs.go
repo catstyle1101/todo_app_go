@@ -571,13 +571,13 @@ const docTemplate = `{
                     "type": "string",
                     "example": "5h32m12s"
                 },
-                "tasks_complete_rate": {
-                    "type": "number",
-                    "example": 33.33333
-                },
                 "tasks_completed": {
                     "type": "integer",
                     "example": 10
+                },
+                "tasks_completed_rate": {
+                    "type": "number",
+                    "example": 33.33333
                 },
                 "tasks_created": {
                     "type": "integer",
