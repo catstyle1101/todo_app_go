@@ -5,12 +5,12 @@ definitions:
       tasks_average_completion_time:
         example: 5h32m12s
         type: string
-      tasks_complete_rate:
-        example: 33.33333
-        type: number
       tasks_completed:
         example: 10
         type: integer
+      tasks_completed_rate:
+        example: 33.33333
+        type: number
       tasks_created:
         example: 30
         type: integer

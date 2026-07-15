@@ -12,6 +12,8 @@ RUN apk add --no-cache ca-certificates tzdata && \
 
 WORKDIR /app
 COPY --from=builder /app/exe /app/
+COPY --from=builder /app/public /app/public
+ENV PROJECT_ROOT=/app
 
 USER appuser
 EXPOSE 5050

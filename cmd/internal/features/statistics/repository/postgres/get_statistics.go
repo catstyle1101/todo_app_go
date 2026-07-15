@@ -44,7 +44,8 @@ func (r *StatisticsRepository) GetTasks(
 	}
 
 	if len(conditions) > 0 {
-		queryBuilder.WriteString(" WHERE " + strings.Join(conditions, " AND "))
+		queryBuilder.WriteString(" WHERE ")
+		queryBuilder.WriteString(strings.Join(conditions, " AND "))
 	}
 
 	queryBuilder.WriteString(" ORDER BY id ASC;")
