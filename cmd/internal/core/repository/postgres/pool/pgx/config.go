@@ -12,7 +12,7 @@ type Config struct {
 	Port     string        `enconfig:"PORT" default:"5432"`
 	User     string        `enconfig:"USER" required:"true"`
 	Password string        `enconfig:"PASSWORD" required:"true"`
-	Database string        `enconfig:"DB" required:"true"`
+	Database string        `enconfig:"DATABASE" required:"true"`
 	Timeout  time.Duration `enconfig:"TIMEOUT" required:"true"`
 }
 

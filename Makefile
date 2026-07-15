@@ -52,7 +52,7 @@ migrate-action:
     	fi; \
 	docker compose run --rm todoapp-postgres-migrate \
 		-path /migrations \
-		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable \
+		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DATABASE}?sslmode=disable \
 	  	"$(action)"
 
 todoapp-run:
@@ -77,3 +77,11 @@ todoapp-undeploy:
 	@docker compose down todoapp
 ps:
 	@docker compose ps
+
+swagger-gen:
+	@docker compose run --rm swagger \
+		init \
+		-g cmd/todoapp/main.go \
+		-o docs \
+		--parseInternal \
+		--parseDependency
