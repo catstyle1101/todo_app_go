@@ -14,8 +14,8 @@ import (
 )
 
 type PatchUserRequest struct {
-	FullName    core_http_types.Nullable[string] `json:"full_name"`
-	PhoneNumber core_http_types.Nullable[string] `json:"phone_number"`
+	FullName    core_http_types.Nullable[string] `json:"full_name" swaggertype:"string" example:"Ivan Ivanov"`
+	PhoneNumber core_http_types.Nullable[string] `json:"phone_number" swaggertype:"string" example:"+79998887766"`
 }
 
 func (r *PatchUserRequest) Validate() error {
@@ -56,6 +56,25 @@ func (r *PatchUserRequest) Validate() error {
 
 type PatchUserResponse UserDTOResponse
 
+// PatchUser 	godoc
+// @Summary 	Изменить пользователя
+// @Description Изменение информации об уже существующем в системе пользователе
+// @Description ### Логика обновления полей (three-state logic):
+// @Description 1. **Поле не передано**: `phone_number` игнорируется, значение в БД не меняется
+// @Description 2. **Явно передано значение**: `{"phone_number": "+71112223344"}` - устанавливает новый номер в БД
+// @Description 3. **Передан `null`**: `{"phone_number": null}` - очищает поле в БД (set NULL)
+// @Description Ограничения: `full_name` не может быть выставлен как `null`.
+// @Tags 		users
+// @Accept 		json
+// @Produce 	json
+// @Param 		user_id 	path 	int 	true 				"ID пользователя для обновления"
+// @Param		request body 		PatchUserRequest 	true 	"PatchUserRequest тело запроса"
+// @Success 	200 {object} PatchUserResponse 					"Успешно измененный пользователь"
+// @Failure 	400 {object} core_http_response.ErrorResponse 	"Bad Request"
+// @Failure 	404 {object} core_http_response.ErrorResponse 	"User not found"
+// @Failure 	409 {object} core_http_response.ErrorResponse 	"Conflict"
+// @Failure 	500 {object} core_http_response.ErrorResponse 	"Internal Server Error"
+// @Router 		/users/{user_id} [patch]
 func (h *UsersHTTPHandler) PatchUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
